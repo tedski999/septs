@@ -1,0 +1,85 @@
+version: "3"
+name: septs
+
+volumes:
+  ssl_data:
+  vpn_data:
+  git_data:
+
+services:
+
+  # Update Cloudflare DNS record to servers public IP address
+  ddns:
+    build: ./ddns
+    restart: on-failure:5
+    environment:
+      CLOUDFLARE_API_TOKEN: ${CLOUDFLARE_API_TOKEN:-unset}
+      CLOUDFLARE_ZONE_ID: ${CLOUDFLARE_ZONE_ID:-unset}
+      CLOUDFLARE_DOMAIN_ID: ${CLOUDFLARE_DOMAIN_ID:-unset}
+
+  # Local DNS server to link domain name and private IP address
+  dnssrv:
+    build: ./dnssrv
+    restart: on-failure:5
+    environment:
+      SERVER_DOMAIN: ${SERVER_DOMAIN:-example.com}
+      SERVER_PRIVATE_ID: ${SERVER_PRIVATE_IP:-unset}
+
+  # A git server for personal projects
+  git:
+    build: ./git
+    restart: on-failure:5
+    volumes:
+      - git_data:/todo
+
+  # TLS reverse proxy between internet and local HTTP web server
+  proxy:
+    build: ./proxy
+    restart: on-failure:5
+    stop_signal: SIGQUIT
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ssl_data:/etc/nginx/certs
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    environment:
+      SERVER_DOMAIN: ${SERVER_DOMAIN:-example.com}
+
+  # Static web server containing HTML generated from local git repositories
+  site.src:
+    build: ./site/src
+    restart: on-failure:5
+    # TODO: graceful shutdown
+    stop_signal: SIGKILL
+    volumes:
+      - git_data:/todo
+
+  # Personal webserver as my homepage and blog
+  site.www:
+    build: ./site/www
+    restart: on-failure:5
+    # TODO: graceful shutdown
+    stop_signal: SIGKILL
+
+  # Automatically register and renew SSL certificates for this domain
+  ssl:
+    build: ./ssl
+    restart: on-failure:5
+    volumes:
+      - ssl_data:/etc/letsencrypt
+    environment:
+      CLOUDFLARE_API_TOKEN: ${CLOUDFLARE_API_TOKEN:-unset}
+      SERVER_DOMAIN: ${SERVER_DOMAIN:-example.com}
+      SERVER_EMAIL: ${SERVER_EMAIL:-root@${SERVER_DOMAIN:-example.com}}
+
+  # Provide a secure VPN service to access local network resources
+  vpn:
+    build: ./vpn
+    restart: on-failure:5
+    ports:
+      - 1194:1194/udp
+    volumes:
+      - vpn_data:/etc/openvpn
+    #cap_add:
+    # - NET_ADMIN
