@@ -12,4 +12,4 @@ CLOUDFLARE_DOMAIN_ID=your_domain_id
 
 Then just run `docker compose up --build --detach` to start everything.
 
-TODO: vpn, git server, root website, git website, dns server
+TODO: vpn, git server, root website, git website, dns server, onion service

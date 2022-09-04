@@ -32,6 +32,11 @@ services:
     volumes:
       - git_data:/todo
 
+  # Tor onion service
+  #onion:
+  #  build: ./onion
+  #  restart: on-failure:5
+
   # TLS reverse proxy between internet and local HTTP web server
   proxy:
     build: ./proxy
