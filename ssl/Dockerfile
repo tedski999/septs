@@ -1,4 +1,4 @@
 FROM certbot/dns-cloudflare:arm64v8-latest
-COPY start.sh /start.sh
-RUN chmod +x /start.sh
-ENTRYPOINT ["/start.sh"]
+COPY startssl /bin/
+RUN chmod +x /bin/startssl
+ENTRYPOINT ["/bin/startssl"]

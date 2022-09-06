@@ -67,9 +67,9 @@ services:
     volumes:
       - ssl_data:/etc/letsencrypt
     environment:
-      CLOUDFLARE_API_TOKEN: ${CLOUDFLARE_API_TOKEN:-unset}
-      SERVER_DOMAIN: ${SERVER_DOMAIN:-example.com}
-      SERVER_EMAIL: ${SERVER_EMAIL:-root@${SERVER_DOMAIN:-example.com}}
+      CF_API_TOKEN: ${CF_API_TOKEN}
+      SRV_DOMAIN: ${SRV_DOMAIN}
+      SRV_EMAIL: ${SRV_EMAIL}
 
   # Provide a secure VPN service to access local network resources
   vpn:

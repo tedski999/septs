@@ -1,28 +1,27 @@
 #!/bin/sh
 
-if ! [ "$CLOUDFLARE_API_TOKEN" -a "$SERVER_DOMAIN" -a "$SERVER_EMAIL" ]; then
+if ! [ "$CF_API_TOKEN" -a "$SRV_DOMAIN" -a "$SRV_EMAIL" ]; then
 	>&2 echo "Error: Missing required environment variables!"
 	exit 1
 fi
 
 trap "echo 'Stopping...'; exit" 15
 
-echo "dns_cloudflare_api_token = $CLOUDFLARE_API_TOKEN" > "/cloudflare.ini"
-chmod go-rwx "/cloudflare.ini"
+echo "dns_cloudflare_api_token = $CF_API_TOKEN" > "/cf.ini"
+chmod go-rwx "/cf.ini"
 
 echo "Checking for valid SSL certificates..."
 certbot renew --quiet --cert-name site
 if [ $? -ne 0 ]; then
 	echo "Missing valid SSL certificates, registering new domain..."
 	certbot certonly \
-		--dry-run \
 		--non-interactive \
 		--agree-tos \
 		--cert-name site \
-		--email "$SERVER_EMAIL" \
-		--domains "$SERVER_DOMAIN,*.$SERVER_DOMAIN" \
+		--email "$SRV_EMAIL" \
+		--domains "$SRV_DOMAIN,*.$SRV_DOMAIN" \
 		--dns-cloudflare \
-		--dns-cloudflare-credentials "/cloudflare.ini" \
+		--dns-cloudflare-credentials "/cf.ini" \
 		--dns-cloudflare-propagation-seconds "60"
 	if [ $? -ne 0 ]; then
 		>&2 echo "Error: Failed to register domain!"
