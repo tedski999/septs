@@ -8,22 +8,15 @@ volumes:
 
 services:
 
-  # Update Cloudflare DNS record to servers public IP address
+  # Keep Cloudflare DNS records updated with current public IP address
   ddns:
     build: ./ddns
     restart: on-failure:5
     environment:
-      CLOUDFLARE_API_TOKEN: ${CLOUDFLARE_API_TOKEN:-unset}
-      CLOUDFLARE_ZONE_ID: ${CLOUDFLARE_ZONE_ID:-unset}
-      CLOUDFLARE_DOMAIN_ID: ${CLOUDFLARE_DOMAIN_ID:-unset}
-
-  # Local DNS server to link domain name and private IP address
-  dnssrv:
-    build: ./dnssrv
-    restart: on-failure:5
-    environment:
-      SERVER_DOMAIN: ${SERVER_DOMAIN:-example.com}
-      SERVER_PRIVATE_ID: ${SERVER_PRIVATE_IP:-unset}
+      CF_API_TOKEN: ${CF_API_TOKEN}
+      CF_ZONE: ${CF_ZONE}
+      CF_A_RECORD: ${CF_A_RECORD}
+      CF_AAAA_RECORD: ${CF_A_RECORD}
 
   # A git server for personal projects
   git:
