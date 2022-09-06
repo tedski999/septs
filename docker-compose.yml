@@ -41,8 +41,6 @@ services:
     volumes:
       - ssl_data:/etc/nginx/certs
       - /var/run/docker.sock:/tmp/docker.sock:ro
-    environment:
-      SERVER_DOMAIN: ${SERVER_DOMAIN:-example.com}
 
   # Static web server containing HTML generated from local git repositories
   site.src:
