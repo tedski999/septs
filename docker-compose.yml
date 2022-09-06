@@ -2,9 +2,10 @@ version: "3"
 name: septs
 
 volumes:
-  ssl_data:
-  vpn_data:
   git_data:
+  ssl_data:
+  tor_data:
+  vpn_data:
 
 services:
 
@@ -26,9 +27,11 @@ services:
       - git_data:/todo
 
   # Tor onion service
-  #onion:
-  #  build: ./onion
-  #  restart: on-failure:5
+  tor:
+    build: ./tor
+    restart: on-failure:5
+    volumes:
+      - tor_data:/etc/nginx/certs
 
   # TLS reverse proxy between internet and local HTTP web server
   proxy:
