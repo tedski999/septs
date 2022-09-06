@@ -1,0 +1,55 @@
+#!/bin/sh
+
+if ! [ "$SRV_DOMAIN" ]; then
+	>&2 echo "Error: Missing required environment variables!"
+	exit 1
+fi
+
+if [ $# -eq 0 ]; then
+	# TODO: generate key and csr
+	csr=""
+	key=""
+else if [ $# -eq 1 ]; then
+	csr="$1"
+	key="YOUR PRIVATE KEY GOES HERE"
+else
+	>&2 echo "Error: Unexpected arguments!"
+	exit 1
+fi
+
+cd /etc/openvpn
+
+ca_cert="$(cat ca.crt)"
+client_cert="$(echo "$csr" | openssl x509 -req -days 3650 -sha256 -CA ca.crt -CAkey ca.key -CAcreateserial 2>/dev/null)"
+if [ $? -ne 0 ]; then
+	2>&1 echo "Error: Failed to sign certificate!"
+	exit 1
+fi
+
+printf "client
+remote vpn.$SRV_DOMAIN 1194 udp
+dev tun
+
+cipher AES-256-CBC
+data-ciphers AES-256-CBC
+
+persist-key
+persist-tun
+
+nobind
+
+# TODO: server.crt keyUsage set to 'digitalSignature, keyEncipherment' and extendedKeyUsage to 'serverAuth'
+# remote-cert-tls server
+
+<ca>
+$ca_cert
+</ca>
+
+<cert>
+$client_cert
+</cert>
+
+<key>
+YOUR PRIVATE KEY
+</key>
+"

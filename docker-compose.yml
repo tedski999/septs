@@ -86,7 +86,9 @@ services:
       - 1194:1194/udp
     volumes:
       - vpn_data:/etc/openvpn
+    devices:
+     - /dev/net/tun:/dev/net/tun
+    cap_add:
+     - NET_ADMIN
     environment:
-      SERVER_DOMAIN: ${SERVER_DOMAIN:-example.com}
-    #cap_add:
-    # - NET_ADMIN
+      SRV_DOMAIN: ${SRV_DOMAIN}
