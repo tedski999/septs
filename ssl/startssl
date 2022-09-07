@@ -32,7 +32,7 @@ fi
 DAY="$(shuf -i 0-6 -n 1)"
 HOUR="$(shuf -i 0-23 -n 1)"
 MINUTE="$(shuf -i 0-59 -n 1)"
-echo "$MINUTE $HOUR * * $DAY root certbot renew --quiet --cert-name site" >> /var/spool/cron/crontabs/root
+echo "$MINUTE $HOUR * * $DAY certbot renew --quiet --cert-name site" >> /var/spool/cron/crontabs/root
 
 echo "Success. Checking for renewals every week at ${DAY}d ${HOUR}h ${MINUTE}m"
 
