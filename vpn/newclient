@@ -6,12 +6,13 @@ if ! [ "$SRV_DOMAIN" ]; then
 fi
 
 if [ $# -eq 0 ]; then
-	# TODO: generate key and csr
-	csr=""
-	key=""
+	client_name="client_$RANDOM"
+	client_csr="$(openssl req -newkey rsa:4096 -nodes -subj "/CN=$client_name" -keyout $client_name)"
+	client_key="$(cat $client_name)"
+	rm $client_name
 else if [ $# -eq 1 ]; then
-	csr="$1"
-	key="YOUR PRIVATE KEY GOES HERE"
+	client_csr="$1"
+	client_key="YOUR PRIVATE KEY GOES HERE"
 else
 	>&2 echo "Error: Unexpected arguments!"
 	exit 1
@@ -20,7 +21,7 @@ fi
 cd /etc/openvpn
 
 ca_cert="$(cat ca.crt)"
-client_cert="$(echo "$csr" | openssl x509 -req -days 3650 -sha256 -CA ca.crt -CAkey ca.key -CAcreateserial 2>/dev/null)"
+client_cert="$(echo "$client_csr" | openssl x509 -req -days 3650 -sha256 -CA ca.crt -CAkey ca.key -CAcreateserial 2>/dev/null)"
 if [ $? -ne 0 ]; then
 	2>&1 echo "Error: Failed to sign certificate!"
 	exit 1
@@ -50,6 +51,6 @@ $client_cert
 </cert>
 
 <key>
-YOUR PRIVATE KEY
+$client_key
 </key>
 "
