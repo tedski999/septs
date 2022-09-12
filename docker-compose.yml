@@ -12,7 +12,7 @@ services:
   # Keep Cloudflare DNS records updated with current public IP address
   ddns:
     build: ./ddns
-    restart: on-failure:5
+    restart: unless-stopped
     environment:
       CF_API_TOKEN: ${CF_API_TOKEN}
       CF_ZONE: ${CF_ZONE}
@@ -29,14 +29,16 @@ services:
   # Tor onion service
   tor:
     build: ./tor
-    restart: on-failure:5
+    restart: unless-stopped
     volumes:
       - tor_data:/etc/nginx/certs
+    profiles:
+      - donotstart
 
   # TLS reverse proxy between internet and local HTTP web server
   proxy:
     build: ./proxy
-    restart: on-failure:5
+    restart: unless-stopped
     stop_signal: SIGQUIT
     ports:
       - 80:80
@@ -48,23 +50,23 @@ services:
   # Static web server containing HTML generated from local git repositories
   site.src:
     build: ./site/src
-    restart: on-failure:5
+    restart: unless-stopped
     # TODO: graceful shutdown
     stop_signal: SIGKILL
     volumes:
-      - git_data:/todo
+      - git_data:/git
 
   # Personal webserver as my homepage and blog
   site.www:
     build: ./site/www
-    restart: on-failure:5
+    restart: unless-stopped
     # TODO: graceful shutdown
     stop_signal: SIGKILL
 
   # Automatically register and renew SSL certificates for this domain
   ssl:
     build: ./ssl
-    restart: on-failure:5
+    restart: unless-stopped
     volumes:
       - ssl_data:/etc/letsencrypt
     environment:
@@ -75,7 +77,7 @@ services:
   # Provide a secure VPN service to access local network resources
   vpn:
     build: ./vpn
-    restart: on-failure:5
+    restart: unless-stopped
     ports:
       - 1194:1194/udp
     volumes:
@@ -86,3 +88,5 @@ services:
      - NET_ADMIN
     environment:
       SRV_DOMAIN: ${SRV_DOMAIN}
+    profiles:
+      - donotstart
