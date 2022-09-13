@@ -19,13 +19,6 @@ services:
       CF_A_RECORD: ${CF_A_RECORD}
       CF_AAAA_RECORD: ${CF_A_RECORD}
 
-  # A git server for personal projects
-  git:
-    build: ./git
-    restart: on-failure:5
-    volumes:
-      - git_data:/todo
-
   # Tor onion service
   tor:
     build: ./tor
