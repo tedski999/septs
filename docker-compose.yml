@@ -11,7 +11,7 @@ services:
 
   # Keep Cloudflare DNS records updated with current public IP address
   ddns:
-    build: ./ddns
+    build: ./septs_ddns
     restart: unless-stopped
     environment:
       CF_API_TOKEN: ${CF_API_TOKEN}
@@ -19,18 +19,16 @@ services:
       CF_A_RECORD: ${CF_A_RECORD}
       CF_AAAA_RECORD: ${CF_A_RECORD}
 
-  # Tor onion service
-  tor:
-    build: ./tor
+  # Git server with static site generator
+  git:
+    build: ./septs_git
     restart: unless-stopped
     volumes:
-      - tor_data:/etc/nginx/certs
-    profiles:
-      - donotstart
+      - git_data:/git
 
-  # TLS reverse proxy between internet and local HTTP web server
+  # TLS reverse proxy between internet and local HTTP web servers
   proxy:
-    build: ./proxy
+    build: ./septs_proxy
     restart: unless-stopped
     stop_signal: SIGQUIT
     ports:
@@ -38,27 +36,12 @@ services:
       - 443:443
     volumes:
       - ssl_data:/etc/nginx/certs
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-
-  # Static web server containing HTML generated from local git repositories
-  site.src:
-    build: ./site/src
-    restart: unless-stopped
-    # TODO: graceful shutdown
-    stop_signal: SIGKILL
-    volumes:
-      - git_data:/git
-
-  # Personal webserver as my homepage and blog
-  site.www:
-    build: ./site/www
-    restart: unless-stopped
-    # TODO: graceful shutdown
-    stop_signal: SIGKILL
+      # TODO: needed?
+      # - /var/run/docker.sock:/tmp/docker.sock:ro
 
   # Automatically register and renew SSL certificates for this domain
   ssl:
-    build: ./ssl
+    build: ./septs_ssl
     restart: unless-stopped
     volumes:
       - ssl_data:/etc/letsencrypt
@@ -67,9 +50,28 @@ services:
       SRV_DOMAIN: ${SRV_DOMAIN}
       SRV_EMAIL: ${SRV_EMAIL}
 
+  # TODO
+  sync:
+    build: ./septs_sync
+    restart: unless-stopped
+    volumes:
+      - sync_data:/sync
+    profiles:
+      - donotstart
+
+  # TODO
+  tor:
+    build: ./septs_tor
+    restart: unless-stopped
+    volumes:
+      - tor_data:/etc/nginx/certs
+    profiles:
+      - donotstart
+
   # Provide a secure VPN service to access local network resources
+  # TODO: doesn't feel secure yet
   vpn:
-    build: ./vpn
+    build: ./septs_vpn
     restart: unless-stopped
     ports:
       - 1194:1194/udp
@@ -83,3 +85,8 @@ services:
       SRV_DOMAIN: ${SRV_DOMAIN}
     profiles:
       - donotstart
+
+  # Primary web server behind reverse proxy
+  www:
+    build: ./septs_www
+    restart: unless-stopped
