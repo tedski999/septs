@@ -36,6 +36,8 @@ services:
       - 443:443
     volumes:
       - ssl_data:/etc/nginx/certs
+      # TODO: replace tmeporary solution
+      - git_data:/git
       # TODO: needed?
       # - /var/run/docker.sock:/tmp/docker.sock:ro
 
