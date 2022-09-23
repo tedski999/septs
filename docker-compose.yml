@@ -38,8 +38,6 @@ services:
       - ssl_data:/etc/nginx/certs
       # TODO: replace tmeporary solution
       - git_data:/git
-      # TODO: needed?
-      # - /var/run/docker.sock:/tmp/docker.sock:ro
 
   # Automatically register and renew SSL certificates for this domain
   ssl:
@@ -53,22 +51,18 @@ services:
       SRV_EMAIL: ${SRV_EMAIL}
 
   # TODO
-  sync:
-    build: ./septs_sync
-    restart: unless-stopped
-    volumes:
-      - sync_data:/sync
-    profiles:
-      - donotstart
+  #sync:
+  #  build: ./septs_sync
+  #  restart: unless-stopped
+  #  volumes:
+  #    - sync_data:/sync
 
   # TODO
-  tor:
-    build: ./septs_tor
-    restart: unless-stopped
-    volumes:
-      - tor_data:/etc/nginx/certs
-    profiles:
-      - donotstart
+  #tor:
+  #  build: ./septs_tor
+  #  restart: unless-stopped
+  #  volumes:
+  #    - tor_data:/etc/nginx/certs
 
   # Provide a secure VPN service to access local network resources
   # TODO: doesn't feel secure yet
@@ -92,3 +86,5 @@ services:
   www:
     build: ./septs_www
     restart: unless-stopped
+    # TODO: temporary
+    stop_signal: SIGKILL
