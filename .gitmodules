@@ -1,15 +1,15 @@
 [submodule "septs_ddns"]
 	path = septs_ddns
-	url = git@h8c.de:septs_ddns.git
+	url = https://src.h8c.de/septs_ddns/
 [submodule "septs_git"]
 	path = septs_git
-	url = git@h8c.de:septs_git.git
+	url = https://src.h8c.de/septs_git/
 [submodule "septs_proxy"]
 	path = septs_proxy
-	url = git@h8c.de:septs_proxy.git
+	url = https://src.h8c.de/septs_proxy/
 [submodule "septs_ssl"]
 	path = septs_ssl
-	url = git@h8c.de:septs_ssl.git
+	url = https://src.h8c.de/septs_ssl/
 [submodule "septs_sync"]
 	path = septs_sync
 	url = https://src.h8c.de/septs_sync/
@@ -18,7 +18,7 @@
 	url = https://src.h8c.de/septs_tor/
 [submodule "septs_vpn"]
 	path = septs_vpn
-	url = git@h8c.de:septs_vpn.git
+	url = https://src.h8c.de/septs_vpn/
 [submodule "septs_www"]
 	path = septs_www
-	url = git@h8c.de:septs_www.git
+	url = https://src.h8c.de/septs_www/
