@@ -12,5 +12,3 @@ CF_AAAA_RECORD=your_aaaa_domain_id
 
 You could put them in a `.env` file.
 Then just run `docker compose up --build --detach` to start everything.
-
-TODO: refine proxy, refine vpn configs, git server, root website, git website, onion service
