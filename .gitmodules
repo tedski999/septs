@@ -22,6 +22,3 @@
 [submodule "septs_www"]
 	path = septs_www
 	url = https://src.h8c.de/septs_www/
-[submodule "mastercard"]
-	path = mastercard
-	url = https://src.h8c.de/mastercard/

@@ -88,7 +88,3 @@ services:
     restart: unless-stopped
     # TODO: temporary
     stop_signal: SIGKILL
-
-  mastercard:
-    build: ./mastercard
-    restart: unless-stopped
