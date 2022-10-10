@@ -14,7 +14,6 @@ services:
 
   # TLS reverse proxy with DDNS and SSL cert autorenewal
   dyrp:
-    name: dyrp
     build: ./dyrp
     restart: unless-stopped
     ports:
@@ -34,7 +33,6 @@ services:
 
   # Git server with static site generator
   src:
-    name: src
     build: ./septs_git
     restart: unless-stopped
     volumes:
@@ -76,7 +74,6 @@ services:
 
   # Primary web server behind reverse proxy
   www:
-    name: www
     build: ./septs_www
     restart: unless-stopped
     networks:
