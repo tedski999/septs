@@ -10,7 +10,7 @@ services:
     volumes:
       - ./data/certs:/etc/letsencrypt
     environment:
-      SUBDOMAINS: src
+      SUBDOMAINS: src,tnds
     env_file:
       - ./config.env
   src:
@@ -23,3 +23,6 @@ services:
     restart: unless-stopped
     # TODO: temporary
     stop_signal: SIGKILL
+  tnds:
+    build: https://src.h8c.de/tnds.git#main
+    restart: unless-stopped
