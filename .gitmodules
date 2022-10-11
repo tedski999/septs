@@ -1,9 +1,0 @@
-[submodule "septs_git"]
-	path = septs_git
-	url = https://src.h8c.de/septs_git/
-[submodule "septs_www"]
-	path = septs_www
-	url = https://src.h8c.de/septs_www/
-[submodule "d3rp"]
-	path = d3rp
-	url = https://src.h8c.de/d3rp/

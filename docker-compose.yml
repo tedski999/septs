@@ -1,74 +1,23 @@
-version: "3"
+version: 3
 name: septs
-
-volumes:
-  git_data:
-  ssl_data:
-  tor_data:
-  vpn_data:
-
 services:
-
-  # DDNS+HTTPS reverse proxy
   d3rp:
-    build: ./d3rp
+    build: https://src.h8c.de/d3rp/
     restart: unless-stopped
     ports:
       - 80:80
       - 443:443
     volumes:
-      - ssl_data:/etc/letsencrypt
-    environment:
-      SUBDOMAINS: ${SUBDOMAINS}
-      DOMAIN_NAME: ${DOMAIN_NAME}
-      DOMAIN_EMAIL: ${DOMAIN_EMAIL}
-      CF_API_TOKEN: ${CF_API_TOKEN}
-      CF_ZONE: ${CF_ZONE}
-      CF_A_RECORD: ${CF_A_RECORD}
-      CF_AAAA_RECORD: ${CF_A_RECORD}
-
-  # Git server with static site generator
+      - ./data/certs:/etc/letsencrypt
+    env_file:
+      - ./config.env
   src:
-    build: ./septs_git
+    build: https://src.h8c.de/src.h8c.de/
     restart: unless-stopped
     volumes:
-      - git_data:/git
-
-  # TODO
-  #sync:
-  #  build: ./septs_sync
-  #  restart: unless-stopped
-  #  volumes:
-  #    - sync_data:/sync
-
-  # TODO
-  #tor:
-  #  build: ./septs_tor
-  #  restart: unless-stopped
-  #  volumes:
-  #    - tor_data:/etc/nginx/certs
-
-  # Provide a secure VPN service to access local network resources
-  # TODO: doesn't feel secure yet
-  #vpn:
-  #  build: ./septs_vpn
-  #  restart: unless-stopped
-  #  ports:
-  #    - 1194:1194/udp
-  #  volumes:
-  #    - vpn_data:/etc/openvpn
-  #  devices:
-  #   - /dev/net/tun:/dev/net/tun
-  #  cap_add:
-  #   - NET_ADMIN
-  #  environment:
-  #    SRV_DOMAIN: ${SRV_DOMAIN}
-  #  profiles:
-  #    - donotstart
-
-  # Primary web server behind reverse proxy
+      - ./data/git:/git
   www:
-    build: ./septs_www
+    build: https://src.h8c.de/h8c.de/
     restart: unless-stopped
     # TODO: temporary
     stop_signal: SIGKILL
