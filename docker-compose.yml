@@ -1,8 +1,8 @@
-version: 3
+version: "3"
 name: septs
 services:
   d3rp:
-    build: https://src.h8c.de/d3rp/
+    build: https://src.h8c.de/d3rp.git#main
     restart: unless-stopped
     ports:
       - 80:80
@@ -12,12 +12,12 @@ services:
     env_file:
       - ./config.env
   src:
-    build: https://src.h8c.de/src.h8c.de/
+    build: https://src.h8c.de/src.h8c.de.git#main
     restart: unless-stopped
     volumes:
       - ./data/git:/git
   www:
-    build: https://src.h8c.de/h8c.de/
+    build: https://src.h8c.de/h8c.de.git#main
     restart: unless-stopped
     # TODO: temporary
     stop_signal: SIGKILL
