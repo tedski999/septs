@@ -7,14 +7,11 @@ volumes:
   tor_data:
   vpn_data:
 
-networks:
-  proxy_bridge:
-
 services:
 
-  # TLS reverse proxy with DDNS and SSL cert autorenewal
-  dyrp:
-    build: ./dyrp
+  # DDNS+HTTPS reverse proxy
+  d3rp:
+    build: ./d3rp
     restart: unless-stopped
     ports:
       - 80:80
@@ -22,14 +19,13 @@ services:
     volumes:
       - ssl_data:/etc/letsencrypt
     environment:
+      SUBDOMAINS: ${SUBDOMAINS}
       DOMAIN_NAME: ${DOMAIN_NAME}
       DOMAIN_EMAIL: ${DOMAIN_EMAIL}
       CF_API_TOKEN: ${CF_API_TOKEN}
       CF_ZONE: ${CF_ZONE}
       CF_A_RECORD: ${CF_A_RECORD}
       CF_AAAA_RECORD: ${CF_A_RECORD}
-    networks:
-      - proxy_bridge
 
   # Git server with static site generator
   src:
@@ -37,8 +33,6 @@ services:
     restart: unless-stopped
     volumes:
       - git_data:/git
-    networks:
-      - proxy_bridge
 
   # TODO
   #sync:
@@ -76,7 +70,5 @@ services:
   www:
     build: ./septs_www
     restart: unless-stopped
-    networks:
-      - proxy_bridge
     # TODO: temporary
     stop_signal: SIGKILL

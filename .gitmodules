@@ -4,6 +4,6 @@
 [submodule "septs_www"]
 	path = septs_www
 	url = https://src.h8c.de/septs_www/
-[submodule "dyrp"]
-	path = dyrp
-	url = https://src.h8c.de/dyrp/
+[submodule "d3rp"]
+	path = d3rp
+	url = https://src.h8c.de/d3rp/
