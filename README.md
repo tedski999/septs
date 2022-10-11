@@ -3,7 +3,6 @@
 Place your configuration in `./config.env`:
 
 ```
-SUBDOMAINS=foo,bar
 DOMAIN_NAME=exmaple.com
 DOMAIN_EMAIL=admin@example.com
 CF_API_TOKEN=xxx
