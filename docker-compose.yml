@@ -10,9 +10,19 @@ services:
     volumes:
       - ./data/certs:/etc/letsencrypt
     environment:
-      SUBDOMAINS: src,tnds
+      SUBDOMAINS: reg,src,tnds
     env_file:
       - ./config.env
+  reg:
+    image: registry:2
+    restart: unless-stopped
+    environment:
+      REGISTRY_HTTP_ADDR: 0.0.0.0:80
+      REGISTRY_AUTH: htpasswd
+      REGISTRY_AUTH_HTPASSWD_PATH: /auth/htpasswd
+    volumes:
+      - ./data/reg/registry:/var/lib/registry
+      - ./data/reg/auth:/auth
   src:
     build: https://src.h8c.de/src.h8c.de.git#main
     restart: unless-stopped
