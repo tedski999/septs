@@ -26,3 +26,5 @@ services:
   tnds:
     build: https://src.h8c.de/tnds.git#main
     restart: unless-stopped
+    volumes:
+      - ./data/tnds:/tnds/data
